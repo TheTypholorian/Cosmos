@@ -1,18 +1,13 @@
 package net.hollowed.cosmos.renderer;
 
-import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.ByteBufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
+import com.mojang.blaze3d.vertex.*;
 import net.hollowed.cosmos.Cosmos;
 import net.hollowed.cosmos.config.CosmosConfig;
-import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -22,20 +17,15 @@ import net.minecraft.util.RandomSource;
 import org.joml.Matrix3f;
 import org.joml.Vector3f;
 
-import static net.minecraft.client.renderer.RenderPipelines.GLOBALS_SNIPPET;
-
 public class CosmosStarRendering {
 
     public static final RenderPipeline COSMOS_STARS = RenderPipelines.register(
-            RenderPipeline.builder(GLOBALS_SNIPPET)
-                    .withBindGroupLayout(BindGroupLayouts.MATRICES_PROJECTION)
-                    .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
+            RenderPipeline.builder(RenderPipelines.MATRICES_PROJECTION_SNIPPET)
                     .withLocation(Cosmos.id("pipeline/stars"))
                     .withVertexShader(Cosmos.id("core/stars"))
                     .withFragmentShader(Cosmos.id("core/stars"))
                     .withColorTargetState(new ColorTargetState(BlendFunction.OVERLAY))
-                    .withVertexBinding(0, DefaultVertexFormat.POSITION_TEX_COLOR)
-                    .withPrimitiveTopology(PrimitiveTopology.QUADS)
+                    .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, VertexFormat.Mode.QUADS)
                     .build()
     );
 
@@ -48,7 +38,7 @@ public class CosmosStarRendering {
 
         GpuBuffer var19;
         try (ByteBufferBuilder byteBufferBuilder = ByteBufferBuilder.exactlySized(DefaultVertexFormat.POSITION_TEX_COLOR.getVertexSize() * CosmosConfig.starCount * 4)) {
-            BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, PrimitiveTopology.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            BufferBuilder bufferBuilder = new BufferBuilder(byteBufferBuilder, VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
 
             TextureAtlasSprite sprite = atlas.getSprite(Cosmos.id("star"));
 
